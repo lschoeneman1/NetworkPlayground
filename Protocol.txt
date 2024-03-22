@@ -1,11 +1,11 @@
-Student Id
+student Id
     - Student name, id, gpa
 
-AddStudent name gpa
+addstudent name gpa
     - return id
-getstudentlist 
+studentlist 
     - listing of students, line by line, 1 student per line
 
-getaveragegpa
+averagegpa
     - returns average gpa across students
-quit - kills server
+quit - ends session

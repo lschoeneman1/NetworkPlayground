@@ -7,6 +7,13 @@ public class Classroom
     private ArrayList<Student> _students = new ArrayList<Student>();
     ReentrantLock lock = new ReentrantLock();
 
+    public Classroom() 
+    {
+        AddStudent("Bob", 2.75);
+        AddStudent("Steve", 2.75);
+        AddStudent("Mike", 2.75);
+        AddStudent("Dave", 2.75);
+    }
     public int AddStudent(String name, double gpa)
     {
         int id = IncrementId();
@@ -43,5 +50,28 @@ public class Classroom
     public ArrayList<Student> getStudents()
     {
         return _students;
+    }
+
+    public Student getStudent(int id)
+    {
+        for (Student student : _students)
+        {
+            if (student.getId() == id)
+            {
+                return student;
+            }
+        }
+        return null;
+    }
+
+    public String getAverageGpa() 
+    {
+        double averageGpa = 0.0;
+        for (Student student : _students)
+        {
+            averageGpa += student.getGPA();
+        }
+        averageGpa = averageGpa / _students.size();
+        return Double.toString(averageGpa);
     }
 }

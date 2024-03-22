@@ -17,77 +17,93 @@ public class StudentService implements Runnable
     }
 
     public void run()
-   {
-      try
-      {
-         try
-         {
-            in = new Scanner(_socket.getInputStream());
-            out = new PrintWriter(_socket.getOutputStream());
-            doService();
+    {
+       try
+       {
+          try
+          {
+             in = new Scanner(_socket.getInputStream());
+             out = new PrintWriter(_socket.getOutputStream());
+             doService();
+          }
+          finally
+          {
+             _socket.close();
+          }
+       }
+       catch (IOException exception)
+       {
+          exception.printStackTrace();
+       }
+    }
+
+    public void doService() throws IOException
+   { 
+    try
+    {     
+      while (true)
+      {  
+         if (!in.hasNext()) 
+         { 
+            return; 
          }
-         finally
+         String command = in.next();
+         if (command.equals("quit")) 
+         { 
+            out.println("Session Ending");
+            out.flush();            
+            return; 
+         }
+         else 
          {
-            _socket.close();
+             String result = executeCommand(command); 
+             out.println(result);
+             out.flush();
          }
       }
-      catch (IOException exception)
-      {
-         exception.printStackTrace();
-      }
+    }
+    catch(Exception ex)
+    {
+        ex.printStackTrace();
+    }
    }
 
-
-    public void doService() throws IOException {
-        while (true) {
-            if (!in.hasNext()) {
-                return;
-            }
-            String command = in.nextLine();
-            if (command.equals("quit")) {
-                return;
-            } else {
-                String result = executeCommand(command);
-                if (!result.equals("")) {
-                    out.println(result);
-                    out.flush();
-                }
-            }
-        }
-    }
-
-    public String executeCommand(String command) {
-        String account = in.next();
-        String result;
-        String[] parameters = account.splitWithDelimiters("\\w", 0);
-        if (parameters[0].equals("addstudent")) {
-
-            result = addStudent(parameters);
-            return result;
-        } else if (command.equals("student")) {
-            result = addStudent(parameters);
-            return result;
-        } else if (command.equals("studentlist")) {
-            result = getStudentList();
-            return result;
-        } else if (command.equals("averagegpa")) {
-            result = getAverageGpa();
-            return result;
-        }
-        return "";
-
-    }
-
-    private String getAverageGpa() 
+    public String executeCommand(String command) 
     {
-        double averageGpa = 0.0;
-        for (Student student : _classroom.getStudents()) 
+        //String account = in.next();
+        String result;
+        try
         {
-            averageGpa += student.getGPA();
+            if (command.equals("addstudent")) 
+            {
+                String name = in.nextLine();
+                double gpa = in.nextDouble();
+                result = addStudent(name, gpa);
+                return result;
+            } 
+            else if (command.equals("student")) 
+            {                
+                int id = in.nextInt();
+                Student student = _classroom.getStudent(id);
+                return student.toString();
+            } 
+            else if (command.equals("studentlist")) 
+            {
+                result = getStudentList();
+                return result;
+            } 
+            else if (command.equals("averagegpa")) 
+            {
+                result = _classroom.getAverageGpa();
+                return result;
+            }
+            return "";
         }
-        averageGpa = averageGpa / _classroom.getStudents().size();
-        return Double.toString(averageGpa);
-    }
+        catch(Exception ex)
+        {
+            return "";
+        }
+    }   
 
     private String getStudentList() 
     {
@@ -99,10 +115,10 @@ public class StudentService implements Runnable
         return buffer;
     }
 
-    private String addStudent(String[] parameters) 
+    private String addStudent(String name, Double gpa) 
     {
-        double gpa = Double.parseDouble(parameters[2]);
-        int id = _classroom.AddStudent(parameters[1], gpa);
+        
+        int id = _classroom.AddStudent(name, gpa);
         return Integer.toString(id);
     }
 }

@@ -10,7 +10,7 @@ public class Student
     public Student(String name, int id, double gpa) 
     {
          _name = name;
-         id = _id;
+         _id = id;
          _gpa = gpa;
     }
 
