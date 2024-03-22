@@ -1,0 +1,11 @@
+Student Id
+    - Student name, id, gpa
+
+AddStudent name gpa
+    - return id
+getstudentlist 
+    - listing of students, line by line, 1 student per line
+
+getaveragegpa
+    - returns average gpa across students
+quit - kills server
